@@ -370,5 +370,20 @@ describe('init.js querystring overrides', function () {
             assert.isUndefined(result.params.title);
             assert.isUndefined(result.stored['kiwixjs-title']);
         });
+
+        it('safely parses encoded parameters containing special characters (&, #, +, ?)', function () {
+            const specialTitles = [
+                'A/AT&T',
+                'A/C#_(programming_language)',
+                'A/C++',
+                'A/Who_is_Who?'
+            ];
+            specialTitles.forEach(function (title) {
+                const encodedQuery = '?title=' + encodeURIComponent(title) + '&darkMode=true';
+                const result = loadInit(PROD_PWA, encodedQuery);
+                assert.strictEqual(result.params.darkMode, true);
+                assert.isUndefined(result.params.title);
+            });
+        });
     });
 });

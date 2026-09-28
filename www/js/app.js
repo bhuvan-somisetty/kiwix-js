@@ -3608,11 +3608,11 @@ function pushBrowserHistoryState (title, titleSearch) {
         // Prevents creating a double history for the same page
         if (history.state && history.state.title === title) return;
         stateObj.title = title;
-        urlParameters = '?title=' + title;
+        urlParameters = '?title=' + encodeURIComponent(title);
         stateLabel = 'Wikipedia Article : ' + title;
     } else if (titleSearch && !(titleSearch === '')) {
         stateObj.titleSearch = titleSearch;
-        urlParameters = '?titleSearch=' + titleSearch;
+        urlParameters = '?titleSearch=' + encodeURIComponent(titleSearch);
         stateLabel = 'Wikipedia search : ' + titleSearch;
     } else {
         return;
