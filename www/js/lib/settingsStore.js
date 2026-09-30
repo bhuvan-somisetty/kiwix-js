@@ -217,24 +217,19 @@ function _reloadApp() {
     }
     if (navigator && navigator.serviceWorker) {
         console.debug('Deregistering Service Workers...');
-        var cnt = 0;
         navigator.serviceWorker.getRegistrations().then(function (registrations) {
             if (!registrations.length) {
                 reboot();
                 return;
             }
-            cnt++;
-            registrations.forEach(function (registration) {
-                registration.unregister().then(function () {
-                    cnt--;
-                    if (!cnt) {
-                        console.debug('All Service Workers unregistered...');
-                        reboot();
-                    }
-                }).catch(function (err) {
+            var unregisterPromises = registrations.map(function (registration) {
+                return registration.unregister().catch(function (err) {
                     console.error(err);
-                    reboot();
                 });
+            });
+            Promise.all(unregisterPromises).then(function () {
+                console.debug('All Service Workers unregistered...');
+                reboot();
             });
         }).catch(function (err) {
             console.error(err);
